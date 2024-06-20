@@ -1,23 +1,15 @@
 ---
-- name: Deploy MOSIP Sandbox VMs
+- name: Launch and setup Multipass VMs on a VirtualBox host-only network
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Launch MOSIP DB VM
-      shell: multipass launch --name mosip-db --cpus 2 --mem 4G --disk 50G
-
-    - name: Launch MOSIP MQ VM
-      shell: multipass launch --name mosip-mq --cpus 2 --mem 2G --disk 20G
-
-    - name: Launch MOSIP Workflow VM
-      shell: multipass launch --name mosip-workflow --cpus 2 --mem 2G --disk 20G
-
-    - name: Launch MOSIP Core VM
-      shell: multipass launch --name mosip-core --cpus 4 --mem 8G --disk 50G
-
-    - name: Launch MOSIP UI VM
-      shell: multipass launch --name mosip-ui --cpus 2 --mem 4G --disk 20G
-
-    - name: Launch MOSIP Auth VM (optional)
-      shell: multipass launch --name mosip-auth --cpus 2 --mem 2G --disk 20G
-
+    - name: Launch VMs with Multipass
+      shell: |
+        multipass launch --name {{ item.name }} --cpus {{ item.cpus }} --mem {{ item.memory }}G --disk {{ item.disk }}G
+      loop:
+        - { name: 'mosip-db', cpus: '2', memory: '4', disk: '50' }
+        - { name: 'mosip-mq', cpus: '2', memory: '2', disk: '20' }
+        - { name: 'mosip-workflow', cpus: '2', memory: '2', disk: '20' }
+        - { name: 'mosip-core', cpus: '4', memory: '8', disk: '50' }
+        - { name: 'mosip-ui', cpus: '2', memory: '4', disk: '20' }
+        - { name: 'mosip-auth', cpus: '2', memory: '2', disk: '20' }

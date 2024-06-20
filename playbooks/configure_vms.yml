@@ -1,21 +1,50 @@
 ---
-- name: Configure MOSIP Sandbox VMs
+- name: Configure VMs and install required packages
   hosts: all
-  become: yes
+  become: true
   tasks:
-    - name: Update and upgrade system packages
+    - name: Update and upgrade all packages
       apt:
         update_cache: yes
         upgrade: 'dist'
+        force_apt_get: yes
 
-    - name: Install Docker
+    - name: Install basic packages
       apt:
-        name: docker.io
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - vim
+          - git
+          - net-tools
         state: present
 
-    - name: Start Docker Service
-      systemd:
-        name: docker
-        state: started
-        enabled: yes
+    - name: Install Docker
+      shell: curl -fsSL https://get.docker.com | sh
+      args:
+        executable: /bin/bash  # Ensuring shell script runs in bash
 
+    - name: Add current user to the Docker group
+      user:
+        name: "{{ ansible_user }}"
+        group: docker
+        append: yes
+
+    - name: Ensure SSH is installed and running
+      apt:
+        name: openssh-server
+        state: present
+
+    - name: Start and enable SSH
+      systemd:
+        name: ssh
+        enabled: yes
+        state: started
+
+    - name: Set up AWX public SSH key for remote access
+      authorized_key:
+        user: "{{ ansible_user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"  # Corrected to use the public key
