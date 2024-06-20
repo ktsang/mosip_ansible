@@ -1,0 +1,21 @@
+---
+- name: Configure MOSIP Sandbox VMs
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update and upgrade system packages
+      apt:
+        update_cache: yes
+        upgrade: 'dist'
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start Docker Service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+

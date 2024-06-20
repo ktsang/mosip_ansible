@@ -1,0 +1,23 @@
+---
+- name: Deploy MOSIP Sandbox VMs
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Launch MOSIP DB VM
+      shell: multipass launch --name mosip-db --cpus 2 --mem 4G --disk 50G
+
+    - name: Launch MOSIP MQ VM
+      shell: multipass launch --name mosip-mq --cpus 2 --mem 2G --disk 20G
+
+    - name: Launch MOSIP Workflow VM
+      shell: multipass launch --name mosip-workflow --cpus 2 --mem 2G --disk 20G
+
+    - name: Launch MOSIP Core VM
+      shell: multipass launch --name mosip-core --cpus 4 --mem 8G --disk 50G
+
+    - name: Launch MOSIP UI VM
+      shell: multipass launch --name mosip-ui --cpus 2 --mem 4G --disk 20G
+
+    - name: Launch MOSIP Auth VM (optional)
+      shell: multipass launch --name mosip-auth --cpus 2 --mem 2G --disk 20G
+
